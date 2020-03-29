@@ -45,7 +45,7 @@ class MyTestCase(unittest.TestCase):
         debt.totalInterest = totalInterestt
         self.assertEqual(debt.totalInterest, totalInterestt)
 
-    def operator_comparison_tests(self):
+    def inequality_comparison_tests(self):
         name = 'bob'
         balance = 500.00
         rate = 0.06
@@ -56,22 +56,28 @@ class MyTestCase(unittest.TestCase):
         avalanche1 = Debt('bob', 1000.00, 0.06, 50.0, 50)
         avalanche2 = Debt('bill', 100.00, 0.12, 50.0, 50)
         self.assertTrue(avalanche1 < avalanche2)
-        self.assertTrue(avalanche1 != avalanche2)
         self.assertFalse(avalanche1 > avalanche2)
         avalanche1.rate = 0.12
-        self.assertTrue(avalanche1 == avalanche2)
         self.assertTrue(avalanche1 >= avalanche2)
         self.assertTrue(avalanche1 <= avalanche2)
 
         snow1 = Debt('bob', 100.00, 0.06, 50.0, 50, method='snowball')
         snow2 = Debt('bill', 2000.00, 0.12, 50.0, 50, method='snowball')
         self.assertTrue(snow1 < snow2)
-        self.assertTrue(snow1 != snow2)
         self.assertFalse(snow1 > snow2)
         snow1.balance = 2000.00
-        self.assertTrue(snow1 == snow2)
         self.assertTrue(snow1 >= snow2)
         self.assertTrue(snow1 <= snow2)
+
+    def equality_comparison_tests(self):
+
+        d1 = Debt('bob', 1000.00, 0.06, 50.0, 50)
+        d2 = Debt('bill', 100.00, 0.12, 50.0, 50)
+        d3 = Debt('bill', 100.00, 0.12, 50.0, 50)
+        self.assertTrue(d1 != d2)
+        self.assertFalse(d1 == d2)
+        self.assertTrue(d2 == d3)
+        self.assertFalse( d2 != d3)
 
 
 if __name__ == '__main__':

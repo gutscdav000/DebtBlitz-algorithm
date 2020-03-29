@@ -62,10 +62,11 @@ class Debt:
         self._totalInterest = interest
 
     def __eq__(self, other):
-        if self.method == 'avalanche':
-            return self.rate == other.rate
-        else:
-            return self.balance == other.balance
+        return self.balance == other.balance and \
+               self.rate == other.rate and \
+               self.name == other.name and \
+               self.minPayment == other.minPayment and \
+               self.loanTerm == other.loanTerm
 
     def __ne__(self, other):
         return not self.__eq__(other)
