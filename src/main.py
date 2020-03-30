@@ -55,10 +55,12 @@ if __name__ == '__main__':
                 termDiscretionary = termDiscretionary + (debt.balance * -1) if debt.balance < 0.0 else termDiscretionary
                 debt.balance = 0.0
 
-                # TODO add metadata to debt (e.g. pay off month-year, periods count, total interest)
-                # not using heapop to ensure correct debt is being removed
+                debt.periodsToPayoff = count
+                debt.payoffDate = (month, year)
+                debt.calculatePossibleInterestSavings()
                 debts.remove(debt)
-                print(f"debt: {debt.name} bal: {debt.balance} cnt: {count} month-year: {str(month)+'-'+str(year)}")
+                print(f"debt: {debt.name} periods: {debt.periodsToPayoff} payoff Date: {debt.payoffDate} total paid interest  {debt.totalInterest} interest savings: {debt.possibleInterestSavings}")
+
 
         month, year = next(g)
         count += 1

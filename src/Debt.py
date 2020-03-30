@@ -1,17 +1,21 @@
-
+from datetime import datetime
 
 class Debt:
 
     def __init__(self, name, balance, rate, minPayment, loanTerm, method='avalanche'):
         self._name = name
         self._balance = balance
+        self._originalBalance = balance
         self._rate = rate
         self._minPayment = minPayment
         self._loanTerm = loanTerm
         self.method = method
-
         # calculation variables
         self._totalInterest = 0.00
+        self._periodsToPayoff = 0
+        self._payoffDate = None
+        self._maxInterest = self.calculateMaxInterest()
+        self._possibleInterestSavings = None
 
     @property
     def name(self):
@@ -61,6 +65,36 @@ class Debt:
     def totalInterest(self, interest):
         self._totalInterest = interest
 
+    @property
+    def periodsToPayoff(self):
+        return self._periodsToPayoff
+
+    @periodsToPayoff.setter
+    def periodsToPayoff(self, n):
+        self._periodsToPayoff = n
+
+    @property
+    def payoffDate(self):
+        return self._payoffDate
+
+    @payoffDate.setter
+    def payoffDate(self, tupl):
+        try:
+            month, year = tupl
+        except ValueError:
+            raise ValueError("Pass an iterable with two items: (e.g (month, year))")
+        else:
+            dt_str = str(year) + '-' + str(month) + '-1'
+            self._payoffDate = datetime.strptime(dt_str, "%Y-%m-%d")
+
+    @property
+    def maxInterest(self):
+        return self._maxInterest
+
+    @property
+    def possibleInterestSavings(self):
+        return self._possibleInterestSavings
+
     def __eq__(self, other):
         return self.balance == other.balance and \
                self.rate == other.rate and \
@@ -94,3 +128,18 @@ class Debt:
             return self.rate <= other.rate
         else:
             return self.balance <= other.balance
+
+    def calculateMaxInterest(self):
+        maxInterest = 0.0
+        balance = self._originalBalance
+
+        while balance >= 0:
+            interest = balance * (self._rate / 12)
+            balance -= self._minPayment - interest
+            maxInterest += interest
+
+        return maxInterest
+
+    def calculatePossibleInterestSavings(self):
+        assert self._totalInterest > 0
+        self._possibleInterestSavings = self._maxInterest - self._totalInterest
