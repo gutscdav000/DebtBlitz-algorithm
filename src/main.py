@@ -47,6 +47,7 @@ def main(method, file=None, jsonObj=None):
     else:
         heapify(debts)  # min-heap
 
+    results = []
     totalDiscretionary = 100.0
     count = 1
     month, year = next(g)
@@ -70,16 +71,19 @@ def main(method, file=None, jsonObj=None):
                 debt.payoffDate = (month, year)
                 debt.calculatePossibleInterestSavings()
                 print(f"debt: {debt.name} periods: {debt.periodsToPayoff} payoff Date: {debt.payoffDate} total paid interest  {debt.totalInterest} interest savings: {debt.possibleInterestSavings}")
-
+                # TODO add the results here and return them from main
+                results.append([debt.name, debt.periodsToPayoff, debt.payoffDate, debt.totalInterest, debt.possibleInterestSavings])
                 debts.remove(debt)
 
         month, year = next(g)
         count += 1
 
+    return results
 
 if __name__ == '__main__':
 
     print('-----start-----')
     # method = 'snowball'
-    main(method='avalanche', file="..\\tests\\TestFiles\\simple_test_1.csv")
+    results = main(method='avalanche', file="..\\tests\\TestFiles\\simple_test_1.csv")
     print('-----finish-----')
+    print(results)
