@@ -2,8 +2,8 @@ import unittest
 from src.Debt import Debt
 from datetime import datetime
 
-class MyTestCase(unittest.TestCase):
-    def simple_property_tests(self):
+class TestDebt(unittest.TestCase):
+    def test_simple_property(self):
         name = 'bob'
         balance = 500.00
         rate = 0.06
@@ -58,7 +58,7 @@ class MyTestCase(unittest.TestCase):
         debt.payoffDate = (5, 2030)
         self.assertEqual(debt.payoffDate, payoffDate)
 
-    def inequality_comparison_tests(self):
+    def test_inequality_comparison(self):
         name = 'bob'
         balance = 500.00
         rate = 0.06
@@ -82,7 +82,7 @@ class MyTestCase(unittest.TestCase):
         self.assertTrue(snow1 >= snow2)
         self.assertTrue(snow1 <= snow2)
 
-    def equality_comparison_tests(self):
+    def test_equality_comparison(self):
 
         d1 = Debt('bob', 1000.00, 0.06, 50.0, 50)
         d2 = Debt('bill', 100.00, 0.12, 50.0, 50)
@@ -92,7 +92,7 @@ class MyTestCase(unittest.TestCase):
         self.assertTrue(d2 == d3)
         self.assertFalse( d2 != d3)
 
-    def compute_interest_savings_tests(self):
+    def test_compute_interest_savings(self):
         d3 = Debt('bill', 100.00, 0.12, 50.0, 50)
         self.assertIsNone(d3.possibleInterestSavings)
         with self.assertRaises(AssertionError):
@@ -102,7 +102,7 @@ class MyTestCase(unittest.TestCase):
         d3.calculatePossibleInterestSavings()
         self.assertEqual(d3._possibleInterestSavings, -498.4749)
 
-    def compute_max_interest_tests(self):
+    def test_compute_max_interest(self):
         d1 = Debt('bob', 1000.00, 0.06, 50.0, 50)
         self.assertAlmostEqual(d1.maxInterest, 56.25, places=2)
         d2 = Debt('bill', 100.00, 0.12, 50.0, 50)

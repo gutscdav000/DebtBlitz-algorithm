@@ -1,7 +1,7 @@
 from src.Debt import Debt
 from datetime import datetime
 from heapq import _heapify_max, heapify
-import csv
+import csv, os
 
 def nextMonthGen():
     now = str(datetime.date(datetime.now()))
@@ -71,7 +71,6 @@ def main(method, file=None, jsonObj=None):
                 debt.payoffDate = (month, year)
                 debt.calculatePossibleInterestSavings()
                 print(f"debt: {debt.name} periods: {debt.periodsToPayoff} payoff Date: {debt.payoffDate} total paid interest  {debt.totalInterest} interest savings: {debt.possibleInterestSavings}")
-                # TODO add the results here and return them from main
                 results.append([debt.name, debt.periodsToPayoff, debt.payoffDate, debt.totalInterest, debt.possibleInterestSavings])
                 debts.remove(debt)
 
@@ -84,6 +83,7 @@ if __name__ == '__main__':
 
     print('-----start-----')
     # method = 'snowball'
-    results = main(method='avalanche', file="..\\tests\\TestFiles\\simple_test_1.csv")
+    # fomatted [name, periodsToPayoff, payoffDate, totalInterest, possibleInterestSavings]
+    results = main(method='avalanche', file=os.path.join('..', 'test', 'TestFiles', 'simple_test_1.csv'))
     print('-----finish-----')
     print(results)

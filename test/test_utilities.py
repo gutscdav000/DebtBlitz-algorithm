@@ -2,7 +2,7 @@ import unittest
 from src.main import nextMonthGen
 from datetime import datetime
 
-class MyTestCase(unittest.TestCase):
+class TestUtilities(unittest.TestCase):
     def test_next_month_generator(self):
         g = nextMonthGen()
         now = str(datetime.date(datetime.now()))
@@ -15,7 +15,6 @@ class MyTestCase(unittest.TestCase):
             year = year + 1 if month == 12 else year
             month = 1 if month == 12 else month + 1
             genMonth, genYear = next(g)
-            print(genMonth, genYear)
             self.assertEqual(genMonth, month)
             self.assertEqual(genYear, year)
 
