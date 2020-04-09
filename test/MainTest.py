@@ -1,5 +1,5 @@
 from unittest import TestLoader, TextTestRunner, TestSuite
-from test.test_debt import TestDebt
+from test.test_standard_amortized import TestDebt
 from test.test_utilities import TestUtilities
 
 if __name__ == "__main__":

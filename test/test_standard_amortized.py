@@ -1,5 +1,6 @@
 import unittest
 from src.Debt import Debt
+from src.StandardAmortized import StandardAmortized
 from datetime import datetime
 
 class TestDebt(unittest.TestCase):
@@ -13,7 +14,7 @@ class TestDebt(unittest.TestCase):
         periodsToPayoff = 0
         payoffDate = None
 
-        debt = Debt(name, balance, rate, minPayment, loanTerm)
+        debt = StandardAmortized(name, balance, rate, minPayment, loanTerm)
 
         self.assertEqual(debt.name, name)
         self.assertEqual(debt.balance, balance)
@@ -66,16 +67,16 @@ class TestDebt(unittest.TestCase):
         loanTerm = 12
         totalInterestt = 0.0
 
-        avalanche1 = Debt('bob', 1000.00, 0.06, 50.0, 50)
-        avalanche2 = Debt('bill', 100.00, 0.12, 50.0, 50)
+        avalanche1 = StandardAmortized('bob', 1000.00, 0.06, 50.0, 50)
+        avalanche2 = StandardAmortized('bill', 100.00, 0.12, 50.0, 50)
         self.assertTrue(avalanche1 < avalanche2)
         self.assertFalse(avalanche1 > avalanche2)
         avalanche1.rate = 0.12
         self.assertTrue(avalanche1 >= avalanche2)
         self.assertTrue(avalanche1 <= avalanche2)
 
-        snow1 = Debt('bob', 100.00, 0.06, 50.0, 50, method='snowball')
-        snow2 = Debt('bill', 2000.00, 0.12, 50.0, 50, method='snowball')
+        snow1 = StandardAmortized('bob', 100.00, 0.06, 50.0, 50, method='snowball')
+        snow2 = StandardAmortized('bill', 2000.00, 0.12, 50.0, 50, method='snowball')
         self.assertTrue(snow1 < snow2)
         self.assertFalse(snow1 > snow2)
         snow1.balance = 2000.00
@@ -84,16 +85,16 @@ class TestDebt(unittest.TestCase):
 
     def test_equality_comparison(self):
 
-        d1 = Debt('bob', 1000.00, 0.06, 50.0, 50)
-        d2 = Debt('bill', 100.00, 0.12, 50.0, 50)
-        d3 = Debt('bill', 100.00, 0.12, 50.0, 50)
+        d1 = StandardAmortized('bob', 1000.00, 0.06, 50.0, 50)
+        d2 = StandardAmortized('bill', 100.00, 0.12, 50.0, 50)
+        d3 = StandardAmortized('bill', 100.00, 0.12, 50.0, 50)
         self.assertTrue(d1 != d2)
         self.assertFalse(d1 == d2)
         self.assertTrue(d2 == d3)
         self.assertFalse( d2 != d3)
 
     def test_compute_interest_savings(self):
-        d3 = Debt('bill', 100.00, 0.12, 50.0, 50)
+        d3 = StandardAmortized('bill', 100.00, 0.12, 50.0, 50)
         self.assertIsNone(d3.possibleInterestSavings)
         with self.assertRaises(AssertionError):
             d3.calculatePossibleInterestSavings()
@@ -103,9 +104,9 @@ class TestDebt(unittest.TestCase):
         self.assertEqual(d3._possibleInterestSavings, -498.4749)
 
     def test_compute_max_interest(self):
-        d1 = Debt('bob', 1000.00, 0.06, 50.0, 50)
+        d1 = StandardAmortized('bob', 1000.00, 0.06, 50.0, 50)
         self.assertAlmostEqual(d1.maxInterest, 56.25, places=2)
-        d2 = Debt('bill', 100.00, 0.12, 50.0, 50)
+        d2 = StandardAmortized('bill', 100.00, 0.12, 50.0, 50)
         self.assertAlmostEqual(d2.maxInterest, 1.53, places=2)
 
 
