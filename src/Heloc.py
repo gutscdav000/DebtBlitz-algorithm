@@ -2,21 +2,21 @@ from src.Debt import Debt
 from src.utils import monthDayMap, nextMonthGen
 from datetime import datetime
 
-class CreditCard(Debt):
+class Heloc(Debt):
 
-    def __init__(self, name, balance, rate, minPaymentPercentage, method='avalanche'):
+    def __init__(self, name, balance, rate, minPayment, method='avalanche'):
         super().__init__(name, balance, rate, method)
-        self._minPaymentPercentage = minPaymentPercentage
+        self._minPayment = minPayment
         # calculation variables
         self._maxPeriods, self._maxInterest = self.calculateMaxInterest()
 
     @property
-    def minPaymentPercentage(self):
-        return self._minPaymentPercentage
+    def minPayment(self):
+        return self._minPayment
 
-    @minPaymentPercentage.setter
-    def minPaymentPercentage(self, mp):
-        self._minPaymentPercentage = mp
+    @minPayment.setter
+    def minPayment(self, mp):
+        self._minPayment = mp
 
     @property
     def maxInterest(self):
@@ -50,10 +50,10 @@ class CreditCard(Debt):
             month, year = next(g)
             # interest = balance * (self._rate / 12)
             interest = (balance * (self.rate / 365)) * monthDayMap.get(month)
-            if balance + interest <= 50.0: # NOTE: this will depend on credit card and should be parameterized
+            if balance + interest <= 0.01:
                 balance -= balance + interest
             else:
-                balance -= (self.minPaymentPercentage * balance) - interest
+                balance -= self.minPayment - interest
 
             self.maxPayoffDate = (month, year)
             maxInterest += interest

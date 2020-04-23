@@ -1,4 +1,5 @@
 from src.Debt import Debt
+from datetime import datetime
 
 class StandardAmortized(Debt):
 
@@ -8,8 +9,7 @@ class StandardAmortized(Debt):
         self._minPayment = minPayment
         self._loanTerm = loanTerm
         # calculation variables
-        #TODO not sure if this will be the same for credit
-        self._maxInterest = self.calculateMaxInterest()
+        self._maxPeriods, self._maxInterest = self.calculateMaxInterest()
 
 
     @property
@@ -36,17 +36,29 @@ class StandardAmortized(Debt):
     def maxInterest(self):
         return self._maxInterest
 
+    @property
+    def maxPayoffDate(self):
+        return self._maxPayoffDate
+
+    @maxPayoffDate.setter
+    def maxPayoffDate(self, tupl):
+        try:
+            month, year = tupl
+        except ValueError:
+            raise ValueError("Pass an iterable with two items: (e.g (month, year))")
+        else:
+            dt_str = str(year) + '-' + str(month) + '-1'
+            self._payoffDate = datetime.strptime(dt_str, "%Y-%m-%d")
+
     def calculateMaxInterest(self):
         maxInterest = 0.0
+        maxMonths = 0
         balance = self._originalBalance
 
         while balance >= 0:
             interest = balance * (self._rate / 12)
             balance -= self._minPayment - interest
             maxInterest += interest
+            maxMonths += 1
 
-        return maxInterest
-
-    # def calculatePossibleInterestSavings(self):
-    #     assert self._totalInterest > 0
-    #     self._possibleInterestSavings = self._maxInterest - self._totalInterest
+        return maxMonths, maxInterest

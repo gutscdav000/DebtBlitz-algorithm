@@ -1,5 +1,5 @@
 import unittest
-from src.main import nextMonthGen
+from src.utils import monthDayMap, nextMonthGen, loadDebtsFromJson, loadDebtsfromFile
 from datetime import datetime
 
 class TestUtilities(unittest.TestCase):
