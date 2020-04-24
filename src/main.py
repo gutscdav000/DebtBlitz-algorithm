@@ -1,29 +1,18 @@
 from src.Debt import Debt
 from src.StandardAmortized import StandardAmortized
 from src.CreditCard import CreditCard
-from src.utils import monthDayMap, nextMonthGen, loadDebtsFromJson, loadDebtsfromFile
+from src.Heloc import Heloc
+from src.DateUtilities import monthDayMap, nextMonthGen
+from src.FileUtilities import loadDebtsFromJson, loadDebtsfromFile
 from datetime import datetime
 from heapq import _heapify_max, heapify
 import csv, os
 
 
-def main(method, file=None, jsonObj=None):
+def main(debts, discretionary, method):
     g = nextMonthGen()
 
 
-    if file:
-        debts = loadDebtsfromFile(file, method)
-    elif jsonObj:
-        debts = loadDebtsFromJson(jsonObj, method)
-    else:
-        # d0 = StandardAmortized("example house", 240000, 0.0375, 1111.0, 30*12, method=method)
-        # d0 = StandardAmortized("example car", 20000, 0.045, 373.0, 5 * 12, method=method)
-        # d0 = StandardAmortized("example student", 25000, 0.0465, 261.0, 10*12, method=method)
-        # TODO calculate daily interest paid off monthly.
-        d0 = CreditCard("example credit", 5000.0, 0.1, 0.02, method=method)
-        # d0 = Heloc()
-        # debts = [d1, d2, d3]
-        debts = [d0]
 
     if method == 'avalanche':
         _heapify_max(debts)  # max-heap: (i.e. descending order)
@@ -31,7 +20,7 @@ def main(method, file=None, jsonObj=None):
         heapify(debts)  # min-heap
 
     results = []
-    totalDiscretionary = 200.0
+    totalDiscretionary = discretionary
     count = 1
     month, year = next(g)
     while debts:
@@ -45,8 +34,12 @@ def main(method, file=None, jsonObj=None):
                 # daily rate * balance * days this cycle
                 interest = (debt.balance * (debt.rate / 365)) * monthDayMap.get(month)
                 debt.balance -= (debt.minPaymentPercentage * debt.balance) - interest
+            elif type(debt) == Heloc:
+                interest = (debt.balance * (debt.rate / 365)) * monthDayMap.get(month)
+                debt.balance -= debt.minPayment - interest
 
-            if termDiscretionary > 0:  # subtract extra discretionary from highest weighted debt
+
+            if termDiscretionary > 0:  # subtract extra discretionary from highest weighted debt(s)
                 debt.balance -= termDiscretionary
             debt.totalInterest += interest
 
@@ -60,7 +53,7 @@ def main(method, file=None, jsonObj=None):
                 debt.payoffDate = (month, year)
                 debt.calculatePossibleInterestSavings()
                 print(f"debt: {debt.name} periods: {debt.periodsToPayoff} payoff Date: {debt.payoffDate} total paid interest  {debt.totalInterest} max interest possible: {debt.maxInterest} interest savings: {debt.possibleInterestSavings}")
-                results.append([debt.name, debt.periodsToPayoff, debt.payoffDate, debt.totalInterest, debt.possibleInterestSavings])
+                results.append([debt.name, debt.periodsToPayoff, debt.payoffDate, debt.maxPeriods,debt.totalInterest, debt.maxInterest])
                 debts.remove(debt)
 
         month, year = next(g)
@@ -69,10 +62,26 @@ def main(method, file=None, jsonObj=None):
     return results
 
 if __name__ == '__main__':
+    file = None; jsonObj = None; method = 'avalanche'; discretionary = 200.0
+
+    if file:
+        debts = loadDebtsfromFile(file, method)
+    elif jsonObj:
+        debts = loadDebtsFromJson(jsonObj, method)
+    else:
+        # d0 = StandardAmortized("example house", 240000, 0.0375, 1111.0, 30*12, method=method)
+        # d0 = StandardAmortized("example car", 20000, 0.045, 373.0, 5 * 12, method=method)
+        # d0 = StandardAmortized("example student", 25000, 0.0465, 261.0, 10*12, method=method)
+        # d0 = CreditCard("example credit", 5000.0, 0.1, 0.02, method=method)
+        # d0 = Heloc("Heloc a la Gucci", 5000.0, 0.0375, 100.0)
+        d0 = Heloc("Big boi Heloc", 25000.0, 0.0375, 100.0)
+        # debts = [d1, d2, d3]
+        debts = [d0]
 
     print('-----start-----')
     # method = 'snowball'
     # fomatted [name, periodsToPayoff, payoffDate, totalInterest, possibleInterestSavings]
-    results = main(method='avalanche')#, file=os.path.join('..', 'test', 'TestFiles', 'simple_test_1.csv'))
+    # [name, periodsToPayoff, debt.payoffDate, maxPeriods,totalInterest paid, maxInterest possible]
+    results = main(debts, discretionary=discretionary, method='avalanche')
     print('-----finish-----')
     print(results)

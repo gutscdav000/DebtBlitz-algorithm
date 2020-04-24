@@ -1,5 +1,5 @@
 from src.Debt import Debt
-from src.utils import monthDayMap, nextMonthGen
+from src.DateUtilities import monthDayMap, nextMonthGen
 from datetime import datetime
 
 class Heloc(Debt):
@@ -48,7 +48,7 @@ class Heloc(Debt):
         balance = self._originalBalance
         while balance >= 0:
             month, year = next(g)
-            # interest = balance * (self._rate / 12)
+
             interest = (balance * (self.rate / 365)) * monthDayMap.get(month)
             if balance + interest <= 0.01:
                 balance -= balance + interest

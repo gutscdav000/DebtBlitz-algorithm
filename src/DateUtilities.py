@@ -1,4 +1,3 @@
-from src.Debt import Debt
 from datetime import datetime
 import os, csv
 
@@ -30,13 +29,3 @@ def nextMonthGen():
         else:
             month += 1
             yield month, year
-
-def loadDebtsfromFile(fileName, method):
-    with open(fileName, 'r') as f:
-        csv_reader = csv.reader(f, delimiter=',')
-        return [Debt(str(row[0]), float(row[1]), float(row[2]), float(row[3]), int(row[4]), method=method) for row in csv_reader ]
-
-
-# probably will be implemented for the web service. . . Eventually
-def loadDebtsFromJson(jsonObj, method):
-    pass
