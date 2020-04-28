@@ -3,13 +3,15 @@ from datetime import datetime
 
 class StandardAmortized(Debt):
 
-    def __init__(self, name, balance, rate, minPayment, loanTerm, method='avalanche'):
+    def __init__(self, name, balance, rate, minPayment, loanTerm, paymentsMade=0, method='avalanche'):
         super().__init__(name, balance, rate, method)
 
         self._minPayment = minPayment
         self._loanTerm = loanTerm
+        self._paymentsMade = paymentsMade
         # calculation variables
         self._maxPeriods, self._maxInterest = self.calculateMaxInterest()
+        # calculate forward looking interest and current balance
 
 
     @property
@@ -50,6 +52,14 @@ class StandardAmortized(Debt):
             dt_str = str(year) + '-' + str(month) + '-1'
             self._payoffDate = datetime.strptime(dt_str, "%Y-%m-%d")
 
+    @property
+    def paymentsMade(self):
+        return self._paymentsMade
+
+    @paymentsMade.setter
+    def paymentsMade(self, pm):
+        self._paymentsMade = pm
+
     def calculateMaxInterest(self):
         maxInterest = 0.0
         maxMonths = 0
@@ -63,3 +73,6 @@ class StandardAmortized(Debt):
             maxMonths += 1
 
         return maxMonths, maxInterest
+
+    def updatePrincipleCaclulation(self):
+        pass

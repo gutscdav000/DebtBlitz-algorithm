@@ -109,6 +109,9 @@ class TestDebt(unittest.TestCase):
         d2 = StandardAmortized('bill', 100.00, 0.12, 50.0, 50)
         self.assertAlmostEqual(d2.maxInterest, 1.53, places=1)
 
+    def test_remaining_principle_calculator(self):
+        d = StandardAmortized('Xavier', 200000.00, 0.05, 1000.00, 360, paymentsMade=36, method='avalanche')
+
 
 
 if __name__ == '__main__':
