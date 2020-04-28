@@ -4,9 +4,10 @@ from datetime import datetime
 
 class CreditCard(Debt):
 
-    def __init__(self, name, balance, rate, minPaymentPercentage, method='avalanche'):
+    def __init__(self, name, balance, rate, minPaymentPercentage, minPaymentValue, method='avalanche'):
         super().__init__(name, balance, rate, method)
         self._minPaymentPercentage = minPaymentPercentage
+        self._minPaymentValue = minPaymentValue
         # calculation variables
         self._maxPeriods, self._maxInterest = self.calculateMaxInterest()
 
@@ -17,6 +18,14 @@ class CreditCard(Debt):
     @minPaymentPercentage.setter
     def minPaymentPercentage(self, mp):
         self._minPaymentPercentage = mp
+
+    @property
+    def minPaymentValue(self):
+        return self._minPaymentValue
+
+    @minPaymentValue.setter
+    def minPaymentValue(self, mp):
+        self._minPaymentValue = mp
 
     @property
     def maxInterest(self):
@@ -50,13 +59,15 @@ class CreditCard(Debt):
             month, year = next(g)
             # interest = balance * (self._rate / 12)
             interest = (balance * (self.rate / 365)) * monthDayMap.get(month)
-            if balance + interest <= 50.0: # NOTE: this will depend on credit card and should be parameterized
+            interest = round(interest, 2)
+            if balance + interest <= self.minPaymentValue: # NOTE: this will depend on credit card and should be parameterized
                 balance -= balance + interest
             else:
-                balance -= (self.minPaymentPercentage * balance) - interest
+                balance -= round((self.minPaymentPercentage * balance) - interest, 2)
 
             self.maxPayoffDate = (month, year)
             maxInterest += interest
+            maxInterest = round(maxInterest, 2)
             maxMonths += 1
 
         return maxMonths, maxInterest

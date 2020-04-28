@@ -101,13 +101,13 @@ class TestDebt(unittest.TestCase):
 
         d3.totalInterest = 500
         d3.calculatePossibleInterestSavings()
-        self.assertEqual(d3._possibleInterestSavings, -498.4749)
+        self.assertEqual(d3._possibleInterestSavings, -498.47)
 
     def test_compute_max_interest(self):
         d1 = StandardAmortized('bob', 1000.00, 0.06, 50.0, 50)
-        self.assertAlmostEqual(d1.maxInterest, 56.25, places=2)
+        self.assertAlmostEqual(d1.maxInterest, 56.25, places=1)
         d2 = StandardAmortized('bill', 100.00, 0.12, 50.0, 50)
-        self.assertAlmostEqual(d2.maxInterest, 1.53, places=2)
+        self.assertAlmostEqual(d2.maxInterest, 1.53, places=1)
 
 
 

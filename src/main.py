@@ -28,20 +28,21 @@ def main(debts, discretionary, method):
         for debt in debts:
             #logic here to differentiate loan types
             if type(debt) == StandardAmortized:
-                interest = debt.balance * (debt.rate / 12)
-                debt.balance -= debt.minPayment - interest
+                interest = round(debt.balance * (debt.rate / 12), 2)
+                debt.balance -= round(debt.minPayment - interest, 2)
             elif type(debt) == CreditCard:
                 # daily rate * balance * days this cycle
-                interest = (debt.balance * (debt.rate / 365)) * monthDayMap.get(month)
-                debt.balance -= (debt.minPaymentPercentage * debt.balance) - interest
+                interest = round((debt.balance * (debt.rate / 365)) * monthDayMap.get(month),2)
+                debt.balance -= round((debt.minPaymentPercentage * debt.balance) - interest, 2)
             elif type(debt) == Heloc:
-                interest = (debt.balance * (debt.rate / 365)) * monthDayMap.get(month)
-                debt.balance -= debt.minPayment - interest
+                interest = round((debt.balance * (debt.rate / 365)) * monthDayMap.get(month), 2)
+                debt.balance -= round(debt.minPayment - interest, 2)
 
 
             if termDiscretionary > 0:  # subtract extra discretionary from highest weighted debt(s)
-                debt.balance -= termDiscretionary
+                debt.balance -= round(termDiscretionary, 2)
             debt.totalInterest += interest
+            debt.totalInterest = round(debt.totalInterest, 2)
 
             # reset balance, add metadata, and dequeue
             if debt.balance <= 0.0:
@@ -52,8 +53,8 @@ def main(debts, discretionary, method):
                 debt.periodsToPayoff = count
                 debt.payoffDate = (month, year)
                 debt.calculatePossibleInterestSavings()
-                print(f"debt: {debt.name} periods: {debt.periodsToPayoff} payoff Date: {debt.payoffDate} total paid interest  {debt.totalInterest} max interest possible: {debt.maxInterest} interest savings: {debt.possibleInterestSavings}")
-                results.append([debt.name, debt.periodsToPayoff, debt.payoffDate, debt.maxPeriods,debt.totalInterest, debt.maxInterest])
+                print(f"debt: {debt.name} periods: {debt.periodsToPayoff} max periods: {debt.maxInterest} payoff Date: {debt.payoffDate} total paid interest  {debt.totalInterest} max interest possible: {debt.maxInterest} interest savings: {debt.possibleInterestSavings}")
+                results.append([debt.name, debt.periodsToPayoff, debt.payoffDate, debt.maxPeriods, debt.totalInterest, debt.maxInterest])
                 debts.remove(debt)
 
         month, year = next(g)
@@ -72,9 +73,9 @@ if __name__ == '__main__':
         # d0 = StandardAmortized("example house", 240000, 0.0375, 1111.0, 30*12, method=method)
         # d0 = StandardAmortized("example car", 20000, 0.045, 373.0, 5 * 12, method=method)
         # d0 = StandardAmortized("example student", 25000, 0.0465, 261.0, 10*12, method=method)
-        # d0 = CreditCard("example credit", 5000.0, 0.1, 0.02, method=method)
+        d0 = CreditCard("example credit", 5000.0, 0.1, 0.02, 320.0,method=method)
         # d0 = Heloc("Heloc a la Gucci", 5000.0, 0.0375, 100.0)
-        d0 = Heloc("Big boi Heloc", 25000.0, 0.0375, 100.0)
+        # d0 = Heloc("Big boi Heloc", 25000.0, 0.0375, 100.0)
         # debts = [d1, d2, d3]
         debts = [d0]
 

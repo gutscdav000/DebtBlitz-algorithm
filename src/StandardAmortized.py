@@ -56,9 +56,10 @@ class StandardAmortized(Debt):
         balance = self._originalBalance
 
         while balance >= 0:
-            interest = balance * (self._rate / 12)
-            balance -= self._minPayment - interest
+            interest = round(balance * (self._rate / 12), 2)
+            balance -= round(self._minPayment - interest, 2)
             maxInterest += interest
+            maxInterest = round(maxInterest, 2)
             maxMonths += 1
 
         return maxMonths, maxInterest

@@ -18,10 +18,10 @@ def loadDebtsfromFile(fileName, method):
 
             if row[1] == "StandardAmortized":
                 debts.append(StandardAmortized(str(row[0]), float(row[2]), float(row[3]), float(row[4]), int(row[5]), method=method))
-                #TODO expected
+                expected_results.append((float(row[5]), float(row[6]), int(row[7]), int(row[8])))
             elif row[1] == "CreditCard":
-                debts.append(CreditCard(str(row[0]), float(row[2]), float(row[3]), float(row[4]), method=method))
-                # TODO expected
+                debts.append(CreditCard(str(row[0]), float(row[2]), float(row[3]), float(row[4]), float(row[5]), method=method))
+                expected_results.append((float(row[6]), float(row[7]), int(row[8]), int(row[9])))
             elif row[1] == "Heloc":
                 debts.append(Heloc(str(row[0]), float(row[2]), float(row[3]), float(row[4]), method=method))
                 expected_results.append((float(row[5]), float(row[6]), int(row[7]), int(row[8])))

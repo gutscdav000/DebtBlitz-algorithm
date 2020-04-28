@@ -49,14 +49,15 @@ class Heloc(Debt):
         while balance >= 0:
             month, year = next(g)
 
-            interest = (balance * (self.rate / 365)) * monthDayMap.get(month)
+            interest = round((balance * (self.rate / 365)) * monthDayMap.get(month), 2)
             if balance + interest <= 0.01:
                 balance -= balance + interest
             else:
-                balance -= self.minPayment - interest
+                balance -= round(self.minPayment - interest, 2)
 
-            self.maxPayoffDate = (month, year)
             maxInterest += interest
+            maxInterest = round(maxInterest, 2)
             maxMonths += 1
 
+        self.maxPayoffDate = (month, year)
         return maxMonths, maxInterest

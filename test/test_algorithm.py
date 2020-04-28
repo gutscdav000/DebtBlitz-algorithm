@@ -3,9 +3,7 @@ from src.FileUtilities import loadDebtsfromFile
 from src.Heloc import Heloc
 from src.main import main
 
-class HelocTestCase(unittest.TestCase):
-    def test_something(self):
-        self.assertEqual(True, True)
+class AlgorithmTestCase(unittest.TestCase):
 
     def test_heloc_0(self):
         # balance: 5000, rate: 3.75, min payment: 100, EXTRA PAYMENT 200
@@ -35,6 +33,19 @@ class HelocTestCase(unittest.TestCase):
         self.assertEqual(expected_results[0][2], actual_results[0][3])
         self.assertEqual(expected_results[0][3], actual_results[0][1])
 
+    def test_credit_card_1(self):
+        debts, expected_results, discretionary = loadDebtsfromFile(os.path.join('TestFiles', 'low_balance_credit_card.csv'),
+                                                                   "avalanche")
+
+        actual_results = main(debts, discretionary, "avalanche")
+        # print('results')
+        # print(actual_results)
+        # print(expected_results)
+        # [name, periodsToPayoff, payoffDate, maxPeriods,totalInterest paid, maxInterest possible]
+        self.assertAlmostEqual(expected_results[0][0], actual_results[0][5], delta=350.0) #TODO fix
+        self.assertAlmostEqual(expected_results[0][1], actual_results[0][4], delta=150.0) #TODO fix
+        self.assertAlmostEqual(expected_results[0][2], actual_results[0][3], delta=5)
+        self.assertEqual(expected_results[0][3], actual_results[0][1])
 
 
 
