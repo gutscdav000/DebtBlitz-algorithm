@@ -19,10 +19,6 @@ class Heloc(Debt):
         self._minPayment = mp
 
     @property
-    def maxInterest(self):
-        return self._maxInterest
-
-    @property
     def maxPeriods(self):
         return self._maxPeriods
 

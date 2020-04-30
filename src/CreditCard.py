@@ -28,26 +28,8 @@ class CreditCard(Debt):
         self._minPaymentValue = mp
 
     @property
-    def maxInterest(self):
-        return self._maxInterest
-
-    @property
     def maxPeriods(self):
         return self._maxPeriods
-
-    @property
-    def maxPayoffDate(self):
-        return self._maxPayoffDate
-
-    @maxPayoffDate.setter
-    def maxPayoffDate(self, tupl):
-        try:
-            month, year = tupl
-        except ValueError:
-            raise ValueError("Pass an iterable with two items: (e.g (month, year))")
-        else:
-            dt_str = str(year) + '-' + str(month) + '-1'
-            self._payoffDate = datetime.strptime(dt_str, "%Y-%m-%d")
 
     def calculateMaxInterest(self):
         g = nextMonthGen()

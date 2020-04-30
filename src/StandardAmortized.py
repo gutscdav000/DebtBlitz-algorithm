@@ -3,13 +3,16 @@ from datetime import datetime
 
 class StandardAmortized(Debt):
 
-    def __init__(self, name, balance, rate, minPayment, loanTerm, paymentsMade=0, method='avalanche'):
+    def __init__(self, name, housePrice, balance, rate, minPayment, loanTerm, paymentsMade=0, pmiPayment=0, method='avalanche'):
         super().__init__(name, balance, rate, method)
 
         self._minPayment = minPayment
         self._loanTerm = loanTerm
         self._paymentsMade = paymentsMade
+        self._pmiPayment = pmiPayment
+        self._housePrice = housePrice
         # calculation variables
+        self.__endPmiValue = housePrice * 0.2
         self._maxPeriods, self._maxInterest = self.calculateMaxInterest()
         # calculate forward looking interest and current balance
 
@@ -34,23 +37,10 @@ class StandardAmortized(Debt):
     def possibleInterestSavings(self):
         return self._possibleInterestSavings
 
-    @property
-    def maxInterest(self):
-        return self._maxInterest
 
     @property
-    def maxPayoffDate(self):
-        return self._maxPayoffDate
-
-    @maxPayoffDate.setter
-    def maxPayoffDate(self, tupl):
-        try:
-            month, year = tupl
-        except ValueError:
-            raise ValueError("Pass an iterable with two items: (e.g (month, year))")
-        else:
-            dt_str = str(year) + '-' + str(month) + '-1'
-            self._payoffDate = datetime.strptime(dt_str, "%Y-%m-%d")
+    def maxPeriods(self):
+        return self._maxPeriods
 
     @property
     def paymentsMade(self):
@@ -60,12 +50,33 @@ class StandardAmortized(Debt):
     def paymentsMade(self, pm):
         self._paymentsMade = pm
 
+    @property
+    def pmiPayment(self):
+        return self._pmiPayment
+
+    @pmiPayment.setter
+    def pmiPayment(self, pmi):
+        self._pmiPayment = pmi
+
+    @property
+    def housePrice(self):
+        return self._housePrice
+
+    @housePrice.setter
+    def housePrice(self, hp):
+        self._housePrice = hp
+
+
     def calculateMaxInterest(self):
         maxInterest = 0.0
         maxMonths = 0
         balance = self._originalBalance
 
         while balance >= 0:
+
+            if balance <= self.__endPmiValue:
+                self.__endPmiValue = 0
+
             interest = round(balance * (self._rate / 12), 2)
             balance -= round(self._minPayment - interest, 2)
             maxInterest += interest

@@ -2,6 +2,7 @@ import unittest, os
 from src.FileUtilities import loadDebtsfromFile
 from src.Heloc import Heloc
 from src.main import main
+from src.StandardAmortized import StandardAmortized
 
 class AlgorithmTestCase(unittest.TestCase):
 
@@ -46,6 +47,30 @@ class AlgorithmTestCase(unittest.TestCase):
         self.assertAlmostEqual(expected_results[0][1], actual_results[0][4], delta=150.0) #TODO fix
         self.assertAlmostEqual(expected_results[0][2], actual_results[0][3], delta=5)
         self.assertEqual(expected_results[0][3], actual_results[0][1])
+
+    def test_remaining_principle_calculator(self):
+        debts, expected_results, discretionary = loadDebtsfromFile(
+            os.path.join('TestFiles', 'heloc_vs_amortized.csv'),
+            "avalanche")
+
+        print(debts)
+        heloc = debts[0]
+        amortized = debts[1]
+
+        print('\nresults')
+        print(expected_results)
+
+        actual_amortized = main([amortized], 0.0, method="avalanche")
+
+        print(actual_amortized)
+        self.assertAlmostEqual(expected_results[1][0], actual_amortized[0][5], delta=5.0)
+        self.assertEqual(expected_results[1][2], actual_amortized[0][3])
+
+        actual_heloc = main([heloc], 0.0, method="avalanche")
+        print(actual_heloc)
+        self.assertAlmostEqual(expected_results[0][0], actual_heloc[0][5], delta=125.0)
+        self.assertEqual(expected_results[0][2], actual_heloc[0][3])
+
 
 
 

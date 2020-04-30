@@ -12,7 +12,7 @@ class Debt:
         self._totalInterest = 0.00
         self._periodsToPayoff = 0
         self._payoffDate = None
-        # self._maxInterest = self.calculateMaxInterest() # note sure difference between credit card & amoritized
+        self._maxInterest = None
         self._possibleInterestSavings = None
 
     @property
@@ -54,6 +54,24 @@ class Debt:
     @periodsToPayoff.setter
     def periodsToPayoff(self, n):
         self._periodsToPayoff = n
+
+    @property
+    def maxPayoffDate(self):
+        return self._maxPayoffDate
+
+    @maxPayoffDate.setter
+    def maxPayoffDate(self, tupl):
+        try:
+            month, year = tupl
+        except ValueError:
+            raise ValueError("Pass an iterable with two items: (e.g (month, year))")
+        else:
+            dt_str = str(year) + '-' + str(month) + '-1'
+            self._payoffDate = datetime.strptime(dt_str, "%Y-%m-%d")
+
+    @property
+    def maxInterest(self):
+        return self._maxInterest
 
     @property
     def payoffDate(self):

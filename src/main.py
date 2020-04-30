@@ -32,7 +32,7 @@ def main(debts, discretionary, method):
                 debt.balance -= round(debt.minPayment - interest, 2)
             elif type(debt) == CreditCard:
                 # daily rate * balance * days this cycle
-                interest = round((debt.balance * (debt.rate / 365)) * monthDayMap.get(month),2)
+                interest = round(debt.balance * (debt.rate / 365) * monthDayMap.get(month),2)
                 debt.balance -= round((debt.minPaymentPercentage * debt.balance) - interest, 2)
             elif type(debt) == Heloc:
                 interest = round((debt.balance * (debt.rate / 365)) * monthDayMap.get(month), 2)

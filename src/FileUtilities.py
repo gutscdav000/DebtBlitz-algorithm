@@ -17,8 +17,8 @@ def loadDebtsfromFile(fileName, method):
                 continue
 
             if row[1] == "StandardAmortized":
-                debts.append(StandardAmortized(str(row[0]), float(row[2]), float(row[3]), float(row[4]), int(row[5]), method=method))
-                expected_results.append((float(row[5]), float(row[6]), int(row[7]), int(row[8])))
+                debts.append(StandardAmortized(str(row[0]), float(row[2]), float(row[3]), float(row[4]), float(row[5]), int(row[6]), method=method))
+                expected_results.append((float(row[7]), float(row[8]), int(row[9]), int(row[10])))
             elif row[1] == "CreditCard":
                 debts.append(CreditCard(str(row[0]), float(row[2]), float(row[3]), float(row[4]), float(row[5]), method=method))
                 expected_results.append((float(row[6]), float(row[7]), int(row[8]), int(row[9])))
