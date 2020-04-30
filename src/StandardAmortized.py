@@ -13,8 +13,8 @@ class StandardAmortized(Debt):
         self._housePrice = housePrice
         # calculation variables
         self.__endPmiValue = housePrice * 0.2
+        self.updatePrincipleCaclulation()
         self._maxPeriods, self._maxInterest = self.calculateMaxInterest()
-        # calculate forward looking interest and current balance
 
 
     @property
@@ -86,4 +86,9 @@ class StandardAmortized(Debt):
         return maxMonths, maxInterest
 
     def updatePrincipleCaclulation(self):
-        pass
+        for i in range(self.paymentsMade):
+            interest = round(self.balance * (self.rate / 12), 2)
+            self.balance -= round(self.minPayment - interest, 2)
+            # not sure if we want to include past interest
+            # self.totalInterest += interest
+            # self.totalInterest = round(self.totalInterest, 2)
