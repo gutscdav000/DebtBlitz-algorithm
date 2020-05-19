@@ -3,16 +3,16 @@ from datetime import datetime
 
 class StandardAmortized(Debt):
 
-    def __init__(self, name, housePrice, balance, rate, minPayment, loanTerm, paymentsMade=0, pmiPayment=0, method='avalanche'):
+    def __init__(self, name, purchasePrice, balance, rate, minPayment, loanTerm, paymentsMade=0, pmiPayment=0, method='avalanche'):
         super().__init__(name, balance, rate, method)
 
         self._minPayment = minPayment
         self._loanTerm = loanTerm
         self._paymentsMade = paymentsMade
         self._pmiPayment = pmiPayment
-        self._housePrice = housePrice
+        self._purchasePrice = purchasePrice
         # calculation variables
-        self.__endPmiValue = housePrice * 0.2
+        self.__endPmiValue = purchasePrice * 0.2
         self.updatePrincipleCaclulation()
         self._maxPeriods, self._maxInterest = self.calculateMaxInterest()
 
@@ -59,12 +59,12 @@ class StandardAmortized(Debt):
         self._pmiPayment = pmi
 
     @property
-    def housePrice(self):
-        return self._housePrice
+    def purchasePrice(self):
+        return self._purchasePrice
 
-    @housePrice.setter
-    def housePrice(self, hp):
-        self._housePrice = hp
+    @purchasePrice.setter
+    def purchasePrice(self, pp):
+        self._purchasePrice = pp
 
 
     def calculateMaxInterest(self):

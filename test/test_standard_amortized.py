@@ -7,7 +7,7 @@ class TestDebt(unittest.TestCase):
     def test_simple_property(self):
         name = 'bob'
         balance = 500.00
-        housePrice = 2500.00
+        purchasePrice = 2500.00
         rate = 0.06
         minPayment = 45.00
         loanTerm = 12
@@ -15,7 +15,7 @@ class TestDebt(unittest.TestCase):
         periodsToPayoff = 0
         payoffDate = None
 
-        debt = StandardAmortized(name, housePrice, balance, rate, minPayment, loanTerm)
+        debt = StandardAmortized(name, purchasePrice, balance, rate, minPayment, loanTerm)
 
         self.assertEqual(debt.name, name)
         self.assertEqual(debt.balance, balance)
@@ -23,7 +23,7 @@ class TestDebt(unittest.TestCase):
         self.assertEqual(debt.rate, rate)
         self.assertEqual(debt.minPayment, minPayment)
         self.assertEqual(debt.loanTerm, loanTerm)
-        self.assertEqual(debt.housePrice, housePrice)
+        self.assertEqual(debt.purchasePrice, purchasePrice)
         # calculated values
         self.assertEqual(debt.totalInterest, totalInterestt)
         self.assertEqual(debt.periodsToPayoff, periodsToPayoff)
@@ -61,29 +61,29 @@ class TestDebt(unittest.TestCase):
         debt.payoffDate = (5, 2030)
         self.assertEqual(debt.payoffDate, payoffDate)
 
-        housePrice = 3000.00
-        debt.housePrice = housePrice
-        self.assertEqual(debt.housePrice, housePrice)
+        purchasePrice = 3000.00
+        debt.purchasePrice = purchasePrice
+        self.assertEqual(debt.purchasePrice, purchasePrice)
 
     def test_inequality_comparison(self):
         name = 'bob'
         balance = 500.00
-        housePrice = 2500.00
+        purchasePrice = 2500.00
         rate = 0.06
         minPayment = 45.00
         loanTerm = 12
         totalInterestt = 0.0
 
-        avalanche1 = StandardAmortized('bob', housePrice, 1000.00, 0.06, 50.0, 50)
-        avalanche2 = StandardAmortized('bill', housePrice, 100.00, 0.12, 50.0, 50)
+        avalanche1 = StandardAmortized('bob', purchasePrice, 1000.00, 0.06, 50.0, 50)
+        avalanche2 = StandardAmortized('bill', purchasePrice, 100.00, 0.12, 50.0, 50)
         self.assertTrue(avalanche1 < avalanche2)
         self.assertFalse(avalanche1 > avalanche2)
         avalanche1.rate = 0.12
         self.assertTrue(avalanche1 >= avalanche2)
         self.assertTrue(avalanche1 <= avalanche2)
 
-        snow1 = StandardAmortized('bob', housePrice, 100.00, 0.06, 50.0, 50, method='snowball')
-        snow2 = StandardAmortized('bill', housePrice, 2000.00, 0.12, 50.0, 50, method='snowball')
+        snow1 = StandardAmortized('bob', purchasePrice, 100.00, 0.06, 50.0, 50, method='snowball')
+        snow2 = StandardAmortized('bill', purchasePrice, 2000.00, 0.12, 50.0, 50, method='snowball')
         self.assertTrue(snow1 < snow2)
         self.assertFalse(snow1 > snow2)
         snow1.balance = 2000.00
