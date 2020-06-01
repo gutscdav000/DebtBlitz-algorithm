@@ -9,7 +9,7 @@ from heapq import _heapify_max, heapify
 import csv, os
 
 
-def main(debts, discretionary, method):
+def main(debts, discretionary, method, actionMonths):
     g = nextMonthGen()
 
 
@@ -29,18 +29,25 @@ def main(debts, discretionary, method):
             #logic here to differentiate loan types
             if type(debt) == StandardAmortized:
                 interest = round(debt.balance * (debt.rate / 12), 2)
-                debt.balance -= round(debt.minPayment - interest, 2)
+                principal = round(debt.minPayment - interest, 2)
+                debt.balance -= principal
             elif type(debt) == CreditCard:
                 # daily rate * balance * days this cycle
                 interest = round(debt.balance * (debt.rate / 365) * monthDayMap.get(month),2)
-                debt.balance -= round((debt.minPaymentPercentage * debt.balance) - interest, 2)
+                principal = round((debt.minPaymentPercentage * debt.balance) - interest, 2)
+                debt.balance -= principal
             elif type(debt) == Heloc:
                 interest = round((debt.balance * (debt.rate / 365)) * monthDayMap.get(month), 2)
-                debt.balance -= round(debt.minPayment - interest, 2)
-
+                principal = round(debt.minPayment - interest, 2)
+                debt.balance -= principal
 
             if termDiscretionary > 0:  # subtract extra discretionary from highest weighted debt(s)
                 debt.balance -= round(termDiscretionary, 2)
+                principal += termDiscretionary
+
+            if count <= actionMonths:
+                debt.actions.append([count, interest, principal])
+
             debt.totalInterest += interest
             debt.totalInterest = round(debt.totalInterest, 2)
 
@@ -54,6 +61,8 @@ def main(debts, discretionary, method):
                 debt.payoffDate = (month, year)
                 debt.calculatePossibleInterestSavings()
                 print(f"debt: {debt.name} periods: {debt.periodsToPayoff} max periods: {debt.maxInterest} payoff Date: {debt.payoffDate} total paid interest  {debt.totalInterest} max interest possible: {debt.maxInterest} interest savings: {debt.possibleInterestSavings}")
+                print("actions: ")
+                print(debt.actions)
                 results.append([debt.name, debt.periodsToPayoff, debt.payoffDate, debt.maxPeriods, debt.totalInterest, debt.maxInterest])
                 debts.remove(debt)
 
@@ -63,7 +72,7 @@ def main(debts, discretionary, method):
     return results
 
 if __name__ == '__main__':
-    file = None; jsonObj = None; method = 'avalanche'; discretionary = 200.0
+    file = None; jsonObj = None; method = 'avalanche'; actionMonths = 12; discretionary = 200.0
 
     if file:
         debts = loadDebtsfromFile(file, method)
@@ -83,6 +92,6 @@ if __name__ == '__main__':
     # method = 'snowball'
     # fomatted [name, periodsToPayoff, payoffDate, totalInterest, possibleInterestSavings]
     # [name, periodsToPayoff, debt.payoffDate, maxPeriods,totalInterest paid, maxInterest possible]
-    results = main(debts, discretionary=discretionary, method='avalanche')
+    results = main(debts, discretionary=discretionary, method='avalanche', actionMonths=actionMonths)
     print('-----finish-----')
     print(results)

@@ -14,6 +14,7 @@ class Debt:
         self._payoffDate = None
         self._maxInterest = None
         self._possibleInterestSavings = None
+        self.actions = []
 
     @property
     def name(self):
