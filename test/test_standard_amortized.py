@@ -15,11 +15,12 @@ class TestDebt(unittest.TestCase):
         periodsToPayoff = 0
         payoffDate = None
 
-        debt = StandardAmortized(name, purchasePrice, balance, rate, minPayment, loanTerm)
+        debt = StandardAmortized(name, purchasePrice, balance, balance, rate, minPayment, loanTerm)
 
         self.assertEqual(debt.name, name)
         self.assertEqual(debt.balance, balance)
         self.assertEqual(debt.balance, balance)
+        self.assertEqual(debt._originalBalance, balance)
         self.assertEqual(debt.rate, rate)
         self.assertEqual(debt.minPayment, minPayment)
         self.assertEqual(debt.loanTerm, loanTerm)
@@ -74,16 +75,16 @@ class TestDebt(unittest.TestCase):
         loanTerm = 12
         totalInterestt = 0.0
 
-        avalanche1 = StandardAmortized('bob', purchasePrice, 1000.00, 0.06, 50.0, 50)
-        avalanche2 = StandardAmortized('bill', purchasePrice, 100.00, 0.12, 50.0, 50)
+        avalanche1 = StandardAmortized('bob', purchasePrice, 1000.00, 1000.00, 0.06, 50.0, 50)
+        avalanche2 = StandardAmortized('bill', purchasePrice, 100.00, 1000.00, 0.12, 50.0, 50)
         self.assertTrue(avalanche1 < avalanche2)
         self.assertFalse(avalanche1 > avalanche2)
         avalanche1.rate = 0.12
         self.assertTrue(avalanche1 >= avalanche2)
         self.assertTrue(avalanche1 <= avalanche2)
 
-        snow1 = StandardAmortized('bob', purchasePrice, 100.00, 0.06, 50.0, 50, method='snowball')
-        snow2 = StandardAmortized('bill', purchasePrice, 2000.00, 0.12, 50.0, 50, method='snowball')
+        snow1 = StandardAmortized('bob', purchasePrice, 100.00, 100.00, 0.06, 50.0, 50, method='snowball')
+        snow2 = StandardAmortized('bill', purchasePrice, 2000.00, 2000.00, 0.12, 50.0, 50, method='snowball')
         self.assertTrue(snow1 < snow2)
         self.assertFalse(snow1 > snow2)
         snow1.balance = 2000.00
@@ -92,35 +93,34 @@ class TestDebt(unittest.TestCase):
 
     def test_equality_comparison(self):
 
-        d1 = StandardAmortized('bob', 4000.0, 1000.00, 0.06, 50.0, 50)
-        d2 = StandardAmortized('bill', 400.0, 100.00, 0.12, 50.0, 50)
-        d3 = StandardAmortized('bill', 400.0,100.00, 0.12, 50.0, 50)
+        d1 = StandardAmortized('bob', 4000.0, 1000.00, 1000.00, 0.06, 50.0, 50)
+        d2 = StandardAmortized('bill', 400.0, 100.00, 100.00, 0.12, 50.0, 50)
+        d3 = StandardAmortized('bill', 400.0,100.00, 1000.00, 0.12, 50.0, 50)
         self.assertTrue(d1 != d2)
         self.assertFalse(d1 == d2)
         self.assertTrue(d2 == d3)
         self.assertFalse( d2 != d3)
 
     def test_compute_interest_savings(self):
-        d3 = StandardAmortized('bill', 400.0, 100.00, 0.12, 50.0, 50)
+        # name, purchasePrice, balance, originalBalance, rate, minPayment, loanTerm, paymentsMade = 0, pmiPayment = 0, method = 'avalanche'):
+        d3 = StandardAmortized('bill', 400.0, 100.00, 100.00, 0.12, 50.0, 50)
         self.assertIsNone(d3.possibleInterestSavings)
-        with self.assertRaises(AssertionError):
-            d3.calculatePossibleInterestSavings()
 
         d3.totalInterest = 500
         d3.calculatePossibleInterestSavings()
         self.assertEqual(d3._possibleInterestSavings, -498.47)
 
     def test_compute_max_interest(self):
-        d1 = StandardAmortized('bob', 4000.0, 1000.00, 0.06, 50.0, 50)
+        d1 = StandardAmortized('bob', 4000.0, 1000.00, 1000.00, 0.06, 50.0, 50)
         self.assertAlmostEqual(d1.maxInterest, 56.25, places=1)
-        d2 = StandardAmortized('bill', 400.0, 100.00, 0.12, 50.0, 50)
+        d2 = StandardAmortized('bill', 400.0, 100.00, 100.00, 0.12, 50.0, 50)
         self.assertAlmostEqual(d2.maxInterest, 1.53, places=1)
 
     def test_remaining_principle_calculator(self):
-        d = StandardAmortized('Xavier', 250000.0, 200000.00, 0.05, 1000.00, 3600, paymentsMade=36, method='avalanche')
+        d = StandardAmortized('Xavier', 250000.0, 200000.00, 200000.00, 0.05, 1000.00, 3600, paymentsMade=36, method='avalanche')
         self.assertAlmostEqual(d.balance, 193541.11, delta=5.0)
 
-        d = StandardAmortized('James', 250000.0,150000.00, 0.08, 1438.00, 3600, paymentsMade=72, method='avalanche')
+        d = StandardAmortized('James', 250000.0,150000.00, 150000.00, 0.08, 1438.00, 3600, paymentsMade=72, method='avalanche')
         self.assertAlmostEqual(d.balance, 109692.91, delta=5.0)
 
 

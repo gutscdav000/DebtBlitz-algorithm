@@ -4,8 +4,8 @@ from datetime import datetime
 
 class CreditCard(Debt):
 
-    def __init__(self, name, balance, rate, minPaymentPercentage, minPaymentValue, method='avalanche'):
-        super().__init__(name, balance, rate, method)
+    def __init__(self, name, balance, originalBalance, rate, minPaymentPercentage, minPaymentValue, method='avalanche'):
+        super().__init__(name, balance, originalBalance, rate, method)
         self._minPaymentPercentage = minPaymentPercentage
         self._minPaymentValue = minPaymentValue
         # calculation variables
@@ -37,7 +37,7 @@ class CreditCard(Debt):
         maxInterest = 0.0
         maxMonths = 0
         balance = self._originalBalance
-        while balance >= 0:
+        while balance > 0:
             month, year = next(g)
             # interest = balance * (self._rate / 12)
             interest = (balance * (self.rate / 365)) * monthDayMap.get(month)

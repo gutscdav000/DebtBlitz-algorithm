@@ -17,14 +17,17 @@ def loadDebtsfromFile(fileName, method):
                 continue
 
             if row[1] == "StandardAmortized":
-                debts.append(StandardAmortized(str(row[0]), float(row[2]), float(row[3]), float(row[4]), float(row[5]), int(row[6]), method=method))
-                expected_results.append((float(row[7]), float(row[8]), int(row[9]), int(row[10])))
+                #amortized,StandardAmortized,250000.0,200000,200000,0.05,1074.0, 360, 186342.64, 0.0, 360, 0
+                #name, purchasePrice, balance, originalBalance, rate, minPayment, loanTerm, paymentsMade=0, pmiPayment=0, method='avalanche'
+                debts.append(StandardAmortized(str(row[0]), float(row[2]), float(row[3]), float(row[4]), float(row[5]), float(row[6]), int(row[7]), method=method))
+                expected_results.append((float(row[8]), float(row[9]), int(row[10]), int(row[11])))
             elif row[1] == "CreditCard":
-                debts.append(CreditCard(str(row[0]), float(row[2]), float(row[3]), float(row[4]), float(row[5]), method=method))
-                expected_results.append((float(row[6]), float(row[7]), int(row[8]), int(row[9])))
+                debts.append(CreditCard(str(row[0]), float(row[2]), float(row[3]), float(row[4]), float(row[5]), float(row[6]), method=method))
+                expected_results.append((float(row[7]), float(row[8]), int(row[9]), int(row[10])))
             elif row[1] == "Heloc":
-                debts.append(Heloc(str(row[0]), float(row[2]), float(row[3]), float(row[4]), method=method))
-                expected_results.append((float(row[5]), float(row[6]), int(row[7]), int(row[8])))
+                # name, balance, originalBalance, rate, minPayment, method='avalanche'
+                debts.append(Heloc(str(row[0]), float(row[2]), float(row[3]), float(row[4]), float(row[5]), method=method))
+                expected_results.append((float(row[6]), float(row[7]), int(row[8]), int(row[9])))
 
             i += 1
 

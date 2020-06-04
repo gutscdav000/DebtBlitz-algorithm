@@ -4,6 +4,7 @@ from src.CreditCard import CreditCard
 from src.Heloc import Heloc
 from src.DateUtilities import monthDayMap, nextMonthGen
 from src.FileUtilities import loadDebtsFromJson, loadDebtsfromFile
+from src.DebtDAO import DebtDAO
 from datetime import datetime
 from heapq import _heapify_max, heapify
 import csv, os
@@ -72,26 +73,33 @@ def main(debts, discretionary, method, actionMonths):
     return results
 
 if __name__ == '__main__':
-    file = None; jsonObj = None; method = 'avalanche'; actionMonths = 12; discretionary = 200.0
+    file = None; jsonObj = None; userId = 1; method = 'avalanche'; actionMonths = 12; discretionary = 200.0
 
     if file:
         debts = loadDebtsfromFile(file, method)
     elif jsonObj:
         debts = loadDebtsFromJson(jsonObj, method)
+    elif userId is not None:
+        # load debts...
+        debtDao = DebtDAO(userId, method)
+        debts = debtDao.retrieveDebts()
     else:
         # d0 = StandardAmortized("example house", 240000, 0.0375, 1111.0, 30*12, method=method)
         # d0 = StandardAmortized("example car", 20000, 0.045, 373.0, 5 * 12, method=method)
         # d0 = StandardAmortized("example student", 25000, 0.0465, 261.0, 10*12, method=method)
-        d0 = CreditCard("example credit", 5000.0, 0.1, 0.02, 320.0,method=method)
+        # d0 = CreditCard("example credit", 5000.0, 0.1, 0.02, 320.0,method=method)
         # d0 = Heloc("Heloc a la Gucci", 5000.0, 0.0375, 100.0)
         # d0 = Heloc("Big boi Heloc", 25000.0, 0.0375, 100.0)
         # debts = [d1, d2, d3]
+        d0 = StandardAmortized("david house", 250000, 200000, 0.05, 1074.0, 30 * 12, method=method)
         debts = [d0]
 
     print('-----start-----')
+    for debt in debts:
+        print(debt)
     # method = 'snowball'
     # fomatted [name, periodsToPayoff, payoffDate, totalInterest, possibleInterestSavings]
     # [name, periodsToPayoff, debt.payoffDate, maxPeriods,totalInterest paid, maxInterest possible]
     results = main(debts, discretionary=discretionary, method='avalanche', actionMonths=actionMonths)
     print('-----finish-----')
-    print(results)
+    # print(results)

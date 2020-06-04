@@ -1,10 +1,9 @@
 from src.Debt import Debt
-from datetime import datetime
 
 class StandardAmortized(Debt):
 
-    def __init__(self, name, purchasePrice, balance, rate, minPayment, loanTerm, paymentsMade=0, pmiPayment=0, method='avalanche'):
-        super().__init__(name, balance, rate, method)
+    def __init__(self, name, purchasePrice, balance, originalBalance, rate, minPayment, loanTerm, paymentsMade=0, pmiPayment=0, method='avalanche'):
+        super().__init__(name, balance, originalBalance, rate, method)
 
         self._minPayment = minPayment
         self._loanTerm = loanTerm
@@ -72,7 +71,7 @@ class StandardAmortized(Debt):
         maxMonths = 0
         balance = self._originalBalance
 
-        while balance >= 0:
+        while balance > 0:
 
             if balance <= self.__endPmiValue:
                 self.__endPmiValue = 0

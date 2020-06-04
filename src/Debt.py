@@ -2,10 +2,10 @@ from datetime import datetime
 
 class Debt:
 
-    def __init__(self, name, balance, rate, method='avalanche'):
+    def __init__(self, name, balance, originalBalance, rate, method='avalanche'):
         self._name = name
         self._balance = balance
-        self._originalBalance = balance
+        self._originalBalance = originalBalance
         self._rate = rate
         self.method = method
         # calculation variables
@@ -131,5 +131,5 @@ class Debt:
             return self.balance <= other.balance
 
     def calculatePossibleInterestSavings(self):
-        assert self._totalInterest > 0
+        # assert self._totalInterest > 0
         self._possibleInterestSavings = self._maxInterest - self._totalInterest
