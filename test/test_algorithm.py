@@ -40,7 +40,7 @@ class AlgorithmTestCase(unittest.TestCase):
 
         actual_results, _ = main(debts, discretionary, actionMonths=12, method="avalanche")
         # [name, periodsToPayoff, payoffDate, maxPeriods,totalInterest paid, maxInterest possible]
-        self.assertAlmostEqual(expected_results[0][0], actual_results[0][5], delta=350.0) #TODO fix
+        self.assertAlmostEqual(expected_results[0][0], actual_results[0][5], delta=350.0) #TODO fix not sure why these are here.
         self.assertAlmostEqual(expected_results[0][1], actual_results[0][4], delta=150.0) #TODO fix
         self.assertAlmostEqual(expected_results[0][2], actual_results[0][3], delta=5)
         self.assertEqual(expected_results[0][3], actual_results[0][1])

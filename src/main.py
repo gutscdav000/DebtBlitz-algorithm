@@ -67,7 +67,6 @@ def main(debts, discretionary, method, actionMonths):
                 results.append([debt.name, debt.periodsToPayoff, debt.payoffDate, debt.maxPeriods, debt.totalInterest, debt.maxInterest])
                 executedDebts.append(debt)
                 shouldRemove.append(debt)
-                # debts.remove(debt) # TODO fix iterator error... when debt is removed one of the debts isn't processed.
 
         month, year = next(g)
         count += 1
