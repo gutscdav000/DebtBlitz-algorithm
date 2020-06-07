@@ -2,7 +2,8 @@ from datetime import datetime
 
 class Debt:
 
-    def __init__(self, name, balance, originalBalance, rate, method='avalanche'):
+    def __init__(self, id, name, balance, originalBalance, rate, method='avalanche'):
+        self._id = id
         self._name = name
         self._balance = balance
         self._originalBalance = originalBalance
@@ -15,6 +16,15 @@ class Debt:
         self._maxInterest = None
         self._possibleInterestSavings = None
         self.actions = []
+        self.debtHistory = []
+
+    @property
+    def id(self):
+        return self._id
+
+    @id.setter
+    def name(self, i):
+        self._id = i
 
     @property
     def name(self):
@@ -31,6 +41,14 @@ class Debt:
     @balance.setter
     def balance(self, b):
         self._balance = b
+
+    @property
+    def originalBalance(self):
+        return self._originalBalance
+
+    @originalBalance.setter
+    def originalBalance(self, ob):
+        self._originalBalance = ob
 
     @property
     def rate(self):

@@ -2,8 +2,8 @@ from src.Debt import Debt
 
 class StandardAmortized(Debt):
 
-    def __init__(self, name, purchasePrice, balance, originalBalance, rate, minPayment, loanTerm, paymentsMade=0, pmiPayment=0, method='avalanche'):
-        super().__init__(name, balance, originalBalance, rate, method)
+    def __init__(self, id, name, purchasePrice, balance, originalBalance, rate, minPayment, loanTerm, paymentsMade=0, pmiPayment=0, method='avalanche'):
+        super().__init__(id, name, balance, originalBalance, rate, method)
 
         self._minPayment = minPayment
         self._loanTerm = loanTerm
@@ -69,7 +69,7 @@ class StandardAmortized(Debt):
     def calculateMaxInterest(self):
         maxInterest = 0.0
         maxMonths = 0
-        balance = self._originalBalance
+        balance = self.originalBalance
 
         while balance > 0:
 

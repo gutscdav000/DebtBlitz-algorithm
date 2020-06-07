@@ -22,8 +22,9 @@ class DbConn:
             except Exception as e:
                 print("an error occurred:\n %s", e)
                 return None
-
-            if not commit:
+            if commit:
+                self._conn.commit()
+            else:
                 return curs.fetchall()
 
     def close_conn(self):

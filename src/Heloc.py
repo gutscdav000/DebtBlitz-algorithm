@@ -4,8 +4,8 @@ from datetime import datetime
 
 class Heloc(Debt):
 
-    def __init__(self, name, balance, originalBalance, rate, minPayment, method='avalanche'):
-        super().__init__(name, balance, originalBalance, rate, method)
+    def __init__(self, id, name, balance, originalBalance, rate, minPayment, method='avalanche'):
+        super().__init__(id, name, balance, originalBalance, rate, method)
         self._minPayment = minPayment
         # calculation variables
         self._maxPeriods, self._maxInterest = self.calculateMaxInterest()
@@ -41,7 +41,7 @@ class Heloc(Debt):
 
         maxInterest = 0.0
         maxMonths = 0
-        balance = self._originalBalance
+        balance = self.originalBalance
         while balance > 0:
             month, year = next(g)
 

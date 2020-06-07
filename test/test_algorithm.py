@@ -11,7 +11,7 @@ class AlgorithmTestCase(unittest.TestCase):
         # total interest: 445, with payment: 142, periods: 55, periods with payment: 18
         debts, expected_results, discretionary = loadDebtsfromFile(os.path.join('TestFiles', 'low_balance_heloc.csv'), "avalanche")
 
-        actual_results = main(debts, discretionary, actionMonths=12, method="avalanche")
+        actual_results, _ = main(debts, discretionary, actionMonths=12, method="avalanche")
 
         # [name, periodsToPayoff, payoffDate, maxPeriods,totalInterest paid, maxInterest possible]
         self.assertAlmostEqual(expected_results[0][0], actual_results[0][5], delta=3.0)
@@ -26,7 +26,7 @@ class AlgorithmTestCase(unittest.TestCase):
         debts, expected_results, discretionary = loadDebtsfromFile(os.path.join('TestFiles', 'avg_balance_heloc.csv'),
                                                                    "avalanche")
 
-        actual_results = main(debts, discretionary, actionMonths=12, method="avalanche")
+        actual_results, _ = main(debts, discretionary, actionMonths=12, method="avalanche")
 
         # [name, periodsToPayoff, payoffDate, maxPeriods,totalInterest paid, maxInterest possible]
         self.assertAlmostEqual(expected_results[0][0], actual_results[0][5], delta=25.0)
@@ -38,10 +38,7 @@ class AlgorithmTestCase(unittest.TestCase):
         debts, expected_results, discretionary = loadDebtsfromFile(os.path.join('TestFiles', 'low_balance_credit_card.csv'),
                                                                    "avalanche")
 
-        actual_results = main(debts, discretionary, actionMonths=12, method="avalanche")
-        # print('results')
-        # print(actual_results)
-        # print(expected_results)
+        actual_results, _ = main(debts, discretionary, actionMonths=12, method="avalanche")
         # [name, periodsToPayoff, payoffDate, maxPeriods,totalInterest paid, maxInterest possible]
         self.assertAlmostEqual(expected_results[0][0], actual_results[0][5], delta=350.0) #TODO fix
         self.assertAlmostEqual(expected_results[0][1], actual_results[0][4], delta=150.0) #TODO fix
@@ -60,13 +57,13 @@ class AlgorithmTestCase(unittest.TestCase):
         print('\nresults')
         print(expected_results)
 
-        actual_amortized = main([amortized], 0.0, actionMonths=12, method="avalanche")
+        actual_amortized, _ = main([amortized], 0.0, actionMonths=12, method="avalanche")
 
         print(actual_amortized)
         self.assertAlmostEqual(expected_results[1][0], actual_amortized[0][5], delta=5.0)
         self.assertEqual(expected_results[1][2], actual_amortized[0][3])
 
-        actual_heloc = main([heloc], 0.0, actionMonths=12, method="avalanche")
+        actual_heloc, _ = main([heloc], 0.0, actionMonths=12, method="avalanche")
         print(actual_heloc)
         self.assertAlmostEqual(expected_results[0][0], actual_heloc[0][5], delta=125.0)
         self.assertEqual(expected_results[0][2], actual_heloc[0][3])

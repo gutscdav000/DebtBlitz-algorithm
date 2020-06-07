@@ -20,7 +20,7 @@ def main(debts, discretionary, method, actionMonths):
     else:
         heapify(debts)  # min-heap
 
-    results = []
+    results = []; executedDebts = []; shouldRemove = []
     totalDiscretionary = discretionary
     count = 1
     month, year = next(g)
@@ -47,7 +47,7 @@ def main(debts, discretionary, method, actionMonths):
                 principal += termDiscretionary
 
             if count <= actionMonths:
-                debt.actions.append([count, interest, principal])
+                debt.actions.append([interest, principal])
 
             debt.totalInterest += interest
             debt.totalInterest = round(debt.totalInterest, 2)
@@ -65,12 +65,17 @@ def main(debts, discretionary, method, actionMonths):
                 print("actions: ")
                 print(debt.actions)
                 results.append([debt.name, debt.periodsToPayoff, debt.payoffDate, debt.maxPeriods, debt.totalInterest, debt.maxInterest])
-                debts.remove(debt)
+                executedDebts.append(debt)
+                shouldRemove.append(debt)
+                # debts.remove(debt) # TODO fix iterator error... when debt is removed one of the debts isn't processed.
 
         month, year = next(g)
         count += 1
+        for debt in shouldRemove:
+            debts.remove(debt)
+        shouldRemove = []
 
-    return results
+    return results, executedDebts
 
 if __name__ == '__main__':
     file = None; jsonObj = None; userId = 1; method = 'avalanche'; actionMonths = 12; discretionary = 200.0
@@ -91,7 +96,7 @@ if __name__ == '__main__':
         # d0 = Heloc("Heloc a la Gucci", 5000.0, 0.0375, 100.0)
         # d0 = Heloc("Big boi Heloc", 25000.0, 0.0375, 100.0)
         # debts = [d1, d2, d3]
-        d0 = StandardAmortized("david house", 250000, 200000, 0.05, 1074.0, 30 * 12, method=method)
+        d0 = StandardAmortized(0, "david house", 250000, 200000, 0.05, 1074.0, 30 * 12, method=method)
         debts = [d0]
 
     print('-----start-----')
@@ -100,6 +105,14 @@ if __name__ == '__main__':
     # method = 'snowball'
     # fomatted [name, periodsToPayoff, payoffDate, totalInterest, possibleInterestSavings]
     # [name, periodsToPayoff, debt.payoffDate, maxPeriods,totalInterest paid, maxInterest possible]
-    results = main(debts, discretionary=discretionary, method='avalanche', actionMonths=actionMonths)
+    results, executedDebts = main(debts, discretionary=discretionary, method='avalanche', actionMonths=actionMonths)
+
+    for debt in executedDebts:
+        debtDao.updateDebt(debt)
+        debtDao.updateActions(debt)
+
+    # debtDao.updateActions(debt)
+    if userId is not None:
+        debtDao.close_conn()
     print('-----finish-----')
     # print(results)
