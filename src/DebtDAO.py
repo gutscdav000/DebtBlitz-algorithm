@@ -107,5 +107,5 @@ class DebtDAO(DbConn):
     def __insertActions(self, actions: list, debtId: int, userId: int):
         for action in actions:
             sql = f"""insert into public.action (debt_id, user_id, principal, interest, pay_date) 
-                      values ({debtId}, {userId}, {action[1]}, {action[0]}, '0001-01-01')"""
+                      values ({debtId}, {userId}, {action[1]}, {action[0]}, '{action[2].strftime("%Y-%m-%d")}')"""
             self.execute_query(sql, commit=True)

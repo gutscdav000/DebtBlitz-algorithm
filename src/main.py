@@ -47,7 +47,7 @@ def main(debts, discretionary, method, actionMonths):
                 principal += termDiscretionary
 
             if count <= actionMonths:
-                debt.actions.append([interest, principal])
+                debt.actions.append([interest, principal, datetime(year, month, 1).date()])
 
             debt.totalInterest += interest
             debt.totalInterest = round(debt.totalInterest, 2)
@@ -106,6 +106,8 @@ if __name__ == '__main__':
     # [name, periodsToPayoff, debt.payoffDate, maxPeriods,totalInterest paid, maxInterest possible]
     results, executedDebts = main(debts, discretionary=discretionary, method='avalanche', actionMonths=actionMonths)
 
+    # TODO probably needs ordered by month, not by debt
+    # TODO e.g: for each month, for each debt
     for debt in executedDebts:
         debtDao.updateDebt(debt)
         debtDao.updateActions(debt)
